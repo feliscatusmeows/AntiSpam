@@ -105,9 +105,7 @@ public class AntiSpam extends JavaPlugin implements Listener {
             return;
         }
 
-        boolean check = spamBotCheck.isSpam(player, message);
-
-        if (check) {
+        if (spamBotCheck.isSpam(player, message)) {
             event.setCancelled(true);
 
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("spam-talk-message")));
@@ -127,6 +125,12 @@ public class AntiSpam extends JavaPlugin implements Listener {
             String[] args = inputText.split(" ", 3);
 
             if (args.length == 3) {
+                if (this.notMoved.contains(player)) {
+                    event.setCancelled(true);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("cannot-talk")));
+                    return;
+                }
+
                 if (spamBotCheck.isSpam(player, args[2])) {
                     event.setCancelled(true);
 

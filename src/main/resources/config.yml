@@ -1,8 +1,8 @@
 cannot-talk: '&7&cYou cannot talk until you have moved!'
 reload-message: '&aPlugin reloaded!'
 noPermissions: '&cYou do not have permission to use this command!'
-spam-talk-message: '&ePlease §cdo not always write the same§e, it gets boring and leads to a &ckick.'
-spam-whisper-message: '&ePlease §cdo not always whisper the same§e, it gets boring and leads to a &ckick.'
+spam-talk-message: '&ePlease &cdo not always write the same&e, it gets boring and leads to a &ckick.'
+spam-whisper-message: '&ePlease &cdo not always whisper the same&e, it gets boring and leads to a &ckick.'
 msg-diff-factor: 0.2
 max-duplicates: 2
 max-sentences-saved: 100
