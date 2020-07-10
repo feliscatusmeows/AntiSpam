@@ -1,4 +1,4 @@
-package org.zeroBzeroT.AntiSpam;
+package org.zeroBzeroT.antispam;
 
 import java.util.ArrayList;
 

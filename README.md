@@ -1,3 +1,3 @@
 # AntiSpam
 
-Protects against recurring spam messages and prevents players from writing messages without having moved before.
+No chat until a block is run and check for spam via Levenshtein distance.

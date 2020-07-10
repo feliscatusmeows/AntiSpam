@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.zeroBzeroT</groupId>
-    <artifactId>AntiSpam</artifactId>
-    <version>1.2.9</version>
+    <artifactId>0b0t_AntiSpam</artifactId>
+    <version>1.3</version>
     <packaging>jar</packaging>
+    <description>No chat until a block is run and check for spam via Levenshtein distance.</description>
 
-    <name>0b0t_AntiSpam</name>
+    <name>AntiSpam</name>
 
     <properties>
         <java.version>1.8</java.version>

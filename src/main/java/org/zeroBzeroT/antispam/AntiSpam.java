@@ -1,6 +1,5 @@
-package org.zeroBzeroT.AntiSpam;
+package org.zeroBzeroT.antispam;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,11 +23,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements Listener {
+public class AntiSpam extends JavaPlugin implements Listener {
     ArrayList<Player> notMoved = new ArrayList<>();
     FileConfiguration config;
     public static List<String> bots = new ArrayList<>();
-    List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
+    static List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
     private SpamCheck spamBotCheck;
 
     @Override
@@ -36,12 +35,19 @@ public class Main extends JavaPlugin implements Listener {
         spamBotCheck = new SpamCheck();
 
         saveDefaultConfig();
-        PluginManager pm = Bukkit.getServer().getPluginManager();
-        pm.registerEvents(this, this);
 
         config = this.getConfig();
 
         bots = config.getStringList("bots");
+
+        SpamCheck.msgDiffFactor = config.getDouble("msg-diff-factor");
+        SpamCheck.maxDuplicates = config.getInt("max-duplicates");
+        SpamCheck.maxSentencesSaved = config.getInt("max-sentences-saved");
+        SpamCheck.minMessageLength = config.getInt("min-message-length");
+        SpamCheck.perPlayerQueueSizeFactor = config.getInt("per-player-queue-size-factor");
+
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(this, this);
     }
 
     @Override
@@ -88,7 +94,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     // chat spam check
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerChatEvent(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
@@ -104,15 +110,14 @@ public class Main extends JavaPlugin implements Listener {
         if (check) {
             event.setCancelled(true);
 
-            player.sendMessage("§ePlease §cdo not always write the same§e, it gets boring and leads to a §ckick.");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("spam-talk-message")));
 
-            log("AsyncPlayerChatEvent", player.getName() + " message has been discarded. " + check);
+            log("onPlayerChatEvent", player.getName() + " message has been discarded.");
         }
     }
 
-    // TODO: try to load plugin before chatco and just block the whisphering
-    // whisper spam check
-    @EventHandler(priority = EventPriority.HIGHEST)
+     // whisper spam check
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
@@ -125,10 +130,9 @@ public class Main extends JavaPlugin implements Listener {
                 if (spamBotCheck.isSpam(player, args[2])) {
                     event.setCancelled(true);
 
-                    TempBanPlayer(player,
-                            "You have been temp banned for spam. If you like to appeal please msg Leee✓ᵛᵉʳᶦᶠᶦᵉᵈ.");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("spam-whisper-message")));
 
-                    log("PlayerCommandPreprocessEvent", player.getName() + " has been temp banned for whisper spam.");
+                    log("onPlayerCommandPreprocess", player.getName() + " whispering has been discarded.");
                 }
             }
         }
@@ -162,15 +166,6 @@ public class Main extends JavaPlugin implements Listener {
 
     private void delNotMoved(Player player) {
         this.notMoved.remove(player);
-    }
-
-    public void TempBanPlayer(Player player, String message) {
-        Bukkit.getScheduler().runTask(this, () -> {
-            Bukkit.getBanList(Type.NAME).addBan(player.getName(), message,
-                    new Date(System.currentTimeMillis() + 30 * 1000), null);
-
-            player.kickPlayer(message);
-        });
     }
 
     public void log(String module, String message) {

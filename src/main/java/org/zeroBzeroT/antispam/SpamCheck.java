@@ -1,16 +1,16 @@
-package org.zeroBzeroT.AntiSpam;
+package org.zeroBzeroT.antispam;
 
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
 public class SpamCheck {
-
 	// factor of the message difference - TODO: Config vars
-	static double msgDiffFac = 1d / 5d;
+	static double msgDiffFactor = 1d / 5d;
 	static int maxDuplicates = 2;
 	static int maxSentencesSaved = 100;
 	static int minMessageLength = 8;
+	static int perPlayerQueueSizeFactor = 5;
 
 	// the last [maxSentencesSaved] chat messages for comparison
 	LimitedSizeQueue<String> lastMessages = new LimitedSizeQueue<>(maxSentencesSaved);
@@ -18,7 +18,7 @@ public class SpamCheck {
 	// Checks message for spam
 	public boolean isSpam(Player p, String message) {
 		// Bots - TODO: UUID - use contains without case
-		for (String bot : Main.bots) {
+		for (String bot : AntiSpam.bots) {
 			if (bot.toLowerCase().contentEquals(p.getName().toLowerCase())) {
 				return false;
 			}
@@ -39,11 +39,11 @@ public class SpamCheck {
 		// has the same already been written?
 		for (String oldMsg : lastMessages) {
 			// difference in length of the messages is already greater than the factor
-			if (Math.abs(oldMsg.length() - saniMsg.length()) > Math.max(oldMsg.length(), saniMsg.length()) * msgDiffFac)
+			if (Math.abs(oldMsg.length() - saniMsg.length()) > Math.max(oldMsg.length(), saniMsg.length()) * msgDiffFactor)
 				continue;
 
 			// Levenshtein distance - strings are similar
-			if (calculateLevenshtein(oldMsg, saniMsg) < saniMsg.length() * msgDiffFac) {
+			if (calculateLevenshtein(oldMsg, saniMsg) < saniMsg.length() * msgDiffFactor) {
 				cntDuplicates++;
 
 				if (cntDuplicates > maxDuplicates)
@@ -61,7 +61,7 @@ public class SpamCheck {
 	}
 
 	public void setPlayerCount(int count) {
-		lastMessages.setSize(Math.max(maxSentencesSaved, count * 5));
+		lastMessages.setSize(Math.max(maxSentencesSaved, count * perPlayerQueueSizeFactor));
 	}
 
 	// distance between two words - the minimum number of single-character edits
