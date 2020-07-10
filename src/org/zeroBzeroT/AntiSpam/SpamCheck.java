@@ -1,4 +1,4 @@
-package com.zeroBzeroT;
+package org.zeroBzeroT.AntiSpam;
 
 import org.bukkit.entity.Player;
 
@@ -13,12 +13,12 @@ public class SpamCheck {
 	static int minMessageLength = 8;
 
 	// the last [maxSentencesSaved] chat messages for comparison
-	LimitedSizeQueue<String> lastMessages = new LimitedSizeQueue<String>(maxSentencesSaved);
+	LimitedSizeQueue<String> lastMessages = new LimitedSizeQueue<>(maxSentencesSaved);
 
 	// Checks message for spam
 	public boolean isSpam(Player p, String message) {
 		// Bots - TODO: UUID - use contains without case
-		for (String bot : AntiSpamBot.bots) {
+		for (String bot : Main.bots) {
 			if (bot.toLowerCase().contentEquals(p.getName().toLowerCase())) {
 				return false;
 			}
@@ -57,7 +57,7 @@ public class SpamCheck {
 			lastMessages.add(saniMsg);
 		}
 
-		return cntDuplicates > maxDuplicates ? true : false;
+		return cntDuplicates > maxDuplicates;
 	}
 
 	public void setPlayerCount(int count) {
