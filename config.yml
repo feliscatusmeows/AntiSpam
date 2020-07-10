@@ -1,0 +1,6 @@
+cannot-talk: '&7&cYou cannot talk until you have moved!'
+reload-message: '&aPlugin reloaded!'
+noPermissions: '&cYou do not have permission to use this command!'
+bots:
+- Leeunderscore
+- Omega19
