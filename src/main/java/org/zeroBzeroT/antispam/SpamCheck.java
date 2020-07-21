@@ -3,6 +3,7 @@ package org.zeroBzeroT.antispam;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class SpamCheck {
 	// factor of the message difference - TODO: Config vars
@@ -37,7 +38,7 @@ public class SpamCheck {
 		int cntDuplicates = 0;
 
 		// has the same already been written?
-		for (String oldMsg : lastMessages) {
+		for (String oldMsg : new LinkedList<>(lastMessages)) { // copy contents to new object to avoid concurrent modification by async chat event handling
 			// difference in length of the messages is already greater than the factor
 			if (Math.abs(oldMsg.length() - saniMsg.length()) > Math.max(oldMsg.length(), saniMsg.length()) * msgDiffFactor)
 				continue;
