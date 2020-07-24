@@ -25,11 +25,18 @@ public class SpamCheck {
 			}
 		}
 
-		// remove hashs
-		// TODO
+		String saniMsg = message;
+
+		// remove numbers and hashcodes - 5+ chars
+		saniMsg=saniMsg.replaceAll("\\b(?=([a-zA-Z]*\\d){1})\\S{4,}\\b","");
+
+		// remove camelcase
+		saniMsg=saniMsg.replaceAll("\\b(?=([a-z]+[A-Z]+|[A-Z]+[a-z]+){2})\\S{3,}\\b","");
 
 		// remove non printable chars and spaces
-		String saniMsg = message.replaceAll("[\\p{C} ]", "").toLowerCase();
+		saniMsg = saniMsg.replaceAll("[\\p{C} ]", "");
+
+		saniMsg = saniMsg.toLowerCase();
 
 		// from [minMessageLength] character length
 		if (saniMsg.length() < minMessageLength)
