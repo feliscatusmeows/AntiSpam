@@ -27,6 +27,10 @@ public class SpamCheck {
 
 		String saniMsg = message;
 
+		// from [minMessageLength] character length
+		if (saniMsg.length() < minMessageLength)
+			return false;
+
 		// remove numbers and hashcodes - 5+ chars
 		saniMsg=saniMsg.replaceAll("\\b(?=([a-zA-Z]*\\d){1})\\S{4,}\\b","");
 
@@ -37,10 +41,6 @@ public class SpamCheck {
 		saniMsg = saniMsg.replaceAll("[\\p{C} ]", "");
 
 		saniMsg = saniMsg.toLowerCase();
-
-		// from [minMessageLength] character length
-		if (saniMsg.length() < minMessageLength)
-			return false;
 
 		int cntDuplicates = 0;
 
