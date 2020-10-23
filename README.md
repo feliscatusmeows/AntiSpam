@@ -1,3 +1,3 @@
 # AntiSpam
 
-No chat until a block is run and check for spam via Levenshtein distance.
+No chat until a block has been run and checked for spam over the Levenshtein distance.

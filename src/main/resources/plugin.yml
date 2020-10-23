@@ -8,6 +8,8 @@ commands:
   movereload:
     description: Reloading plugin
     usage: /<command>
+  showspam:
+    description: shows the last spam messages
 permissions:
   move.bypass:
     description: Allows you to bypass the Not-Moved-Filter

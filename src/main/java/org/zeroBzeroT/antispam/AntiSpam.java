@@ -1,33 +1,29 @@
 package org.zeroBzeroT.antispam;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.bukkit.BanList.Type;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class AntiSpam extends JavaPlugin implements Listener {
-    ArrayList<Player> notMoved = new ArrayList<>();
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
+    final ArrayList<Player> notMoved = new ArrayList<>();
     FileConfiguration config;
     public static List<String> bots = new ArrayList<>();
-    static List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
+    static final List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
     private SpamCheck spamBotCheck;
 
     @Override
@@ -48,6 +44,9 @@ public class AntiSpam extends JavaPlugin implements Listener {
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
+
+        this.getCommand("showspam").setExecutor(this);
+        this.getCommand("movereload").setExecutor(this);
     }
 
     @Override
@@ -61,9 +60,9 @@ public class AntiSpam extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
+        if (sender instanceof Player && cmd.getName().equalsIgnoreCase("movereload")) {
+            Player player = (Player) sender;
 
-        if (cmd.getName().equalsIgnoreCase("movereload")) {
             if (player.hasPermission("move.reload")) {
                 reloadConfig();
                 player.sendMessage(
@@ -72,6 +71,16 @@ public class AntiSpam extends JavaPlugin implements Listener {
             }
 
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("noPermissions")));
+            return true;
+        } else if (sender instanceof ConsoleCommandSender && cmd.getName().equalsIgnoreCase("showspam")) {
+            ConsoleCommandSender console = (ConsoleCommandSender) sender;
+
+            log("showspam", ChatColor.DARK_PURPLE + "Here comes the spam:");
+
+            for (String oldSpam : new LinkedList<>(spamBotCheck.lastSpamMessages)) {
+                log("showspam", ChatColor.LIGHT_PURPLE + oldSpam);
+            }
+
             return true;
         }
 
@@ -114,7 +123,7 @@ public class AntiSpam extends JavaPlugin implements Listener {
         }
     }
 
-     // whisper spam check
+    // whisper spam check
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
