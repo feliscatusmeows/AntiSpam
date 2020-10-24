@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.PluginManager;
@@ -25,15 +26,15 @@ public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
     public static List<String> bots = new ArrayList<>();
     static final List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
     private SpamCheck spamBotCheck;
+    private UnicodeRanges unicodeRanges;
 
     @Override
     public void onEnable() {
         spamBotCheck = new SpamCheck();
+        unicodeRanges = new UnicodeRanges(this);
 
         saveDefaultConfig();
-
         config = this.getConfig();
-
         bots = config.getStringList("bots");
 
         SpamCheck.msgDiffFactor = config.getDouble("msg-diff-factor");
@@ -53,6 +54,9 @@ public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
     public void onDisable() {
         try {
             saveConfig();
+
+            HandlerList.unregisterAll((JavaPlugin)this);
+            HandlerList.unregisterAll((Listener)this);
         } catch (Exception e) {
             e.printStackTrace();
         }

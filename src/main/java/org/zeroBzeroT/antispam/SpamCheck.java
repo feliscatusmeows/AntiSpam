@@ -66,29 +66,28 @@ public class SpamCheck {
         // we dont need to add the message if its already in the list (really?
         // drawbacks?)
         if (cntDuplicates <= maxDuplicates) {
-            if(!lastMessages.contains(saniMsg))
-                lastMessages.add(saniMsg);
+            lastMessages.add(saniMsg);
         }
 
-        if(cntDuplicates > maxDuplicates) {
-        	// is Spam
-			lastSpamMessages.add(saniMsg);
+        if (cntDuplicates > maxDuplicates) {
+            // is Spam
+            if (!lastSpamMessages.contains(saniMsg))
+                lastSpamMessages.add(saniMsg);
 
-			return true;
-		}
-        else {
-        	// Messages seems to be ok - so check the last spam messages
-			for (String oldSpam : new LinkedList<>(lastSpamMessages)) {
-				// difference in length of the messages is already greater than the factor
-				if (Math.abs(oldSpam.length() - saniMsg.length()) > Math.max(oldSpam.length(), saniMsg.length()) * msgDiffFactor)
-					continue;
+            return true;
+        } else {
+            // Messages seems to be ok - so check the last spam messages
+            for (String oldSpam : new LinkedList<>(lastSpamMessages)) {
+                // difference in length of the messages is already greater than the factor
+                if (Math.abs(oldSpam.length() - saniMsg.length()) > Math.max(oldSpam.length(), saniMsg.length()) * msgDiffFactor)
+                    continue;
 
-				// Levenshtein distance - strings are similar
-				if (calculateLevenshtein(oldSpam, saniMsg) < saniMsg.length() * msgDiffFactor) {
-					return true;
-				}
-			}
-		}
+                // Levenshtein distance - strings are similar
+                if (calculateLevenshtein(oldSpam, saniMsg) < saniMsg.length() * msgDiffFactor) {
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
