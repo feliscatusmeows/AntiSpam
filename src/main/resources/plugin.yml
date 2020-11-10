@@ -1,9 +1,9 @@
 name: ${project.name}
 main: org.zeroBzeroT.antispam.AntiSpam
 version: ${project.version}
-author: [bierdosenhalter]
+author: bierdosenhalter
 description: ${project.description}
-loadbefore: [ChatCo]
+loadbefore: [ ChatCo ]
 commands:
   movereload:
     description: Reloading plugin

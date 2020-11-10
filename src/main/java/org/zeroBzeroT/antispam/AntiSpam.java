@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,31 +15,22 @@ import org.bukkit.event.player.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
+    static final List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
+    public static List<String> bots = new ArrayList<>();
     final ArrayList<Player> notMoved = new ArrayList<>();
     FileConfiguration config;
-    public static List<String> bots = new ArrayList<>();
-    static final List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
     private SpamCheck spamBotCheck;
-    private UnicodeRanges unicodeRanges;
+
 
     @Override
     public void onEnable() {
-        spamBotCheck = new SpamCheck();
-        
-        try {
-            unicodeRanges = new UnicodeRanges(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+        spamBotCheck = new SpamCheck(this);
 
         saveDefaultConfig();
         config = this.getConfig();
@@ -64,8 +54,8 @@ public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
         try {
             saveConfig();
 
-            HandlerList.unregisterAll((JavaPlugin)this);
-            HandlerList.unregisterAll((Listener)this);
+            HandlerList.unregisterAll((JavaPlugin) this);
+            HandlerList.unregisterAll((Listener) this);
         } catch (Exception e) {
             e.printStackTrace();
         }
