@@ -76,12 +76,18 @@ public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("noPermissions")));
             return true;
         } else if (sender instanceof ConsoleCommandSender && cmd.getName().equalsIgnoreCase("showspam")) {
-            ConsoleCommandSender console = (ConsoleCommandSender) sender;
-
             log("showspam", ChatColor.DARK_PURPLE + "Here comes the spam:");
 
             for (String oldSpam : new LinkedList<>(spamBotCheck.lastSpamMessages)) {
                 log("showspam", ChatColor.LIGHT_PURPLE + oldSpam);
+            }
+
+            return true;
+        } else if (sender instanceof ConsoleCommandSender && cmd.getName().equalsIgnoreCase("showmessages")) {
+            log("showmessages", ChatColor.DARK_PURPLE + "Here comes the messages:");
+
+            for (String oldMessage : new LinkedList<>(spamBotCheck.lastMessages)) {
+                log("showmessages", ChatColor.LIGHT_PURPLE + oldMessage);
             }
 
             return true;

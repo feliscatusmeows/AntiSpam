@@ -101,18 +101,18 @@ public class SpamCheck {
             if (calculateLevenshtein(oldMsg, saniMsg) < saniMsg.length() * msgDiffFactor) {
                 cntDuplicates++;
 
-                if (cntDuplicates > maxDuplicates)
+                if (cntDuplicates >= maxDuplicates)
                     break;
             }
         }
 
         // we dont need to add the message if its already in the list (really?
         // drawbacks?)
-        if (cntDuplicates <= maxDuplicates) {
-            lastMessages.add(saniMsg);
-        }
+        //if (cntDuplicates < maxDuplicates) {
+        lastMessages.add(saniMsg);
+        //}
 
-        if (cntDuplicates > maxDuplicates) {
+        if (cntDuplicates >= maxDuplicates) {
             // is Spam
             if (!lastSpamMessages.contains(saniMsg))
                 lastSpamMessages.add(saniMsg);

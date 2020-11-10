@@ -10,6 +10,8 @@ commands:
     usage: /<command>
   showspam:
     description: shows the last spam messages
+  showmessages:
+    description: shows the last sanitized messages
 permissions:
   move.bypass:
     description: Allows you to bypass the Not-Moved-Filter
