@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.PluginManager;
@@ -20,20 +21,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
+    static final List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
+    public static List<String> bots = new ArrayList<>();
     final ArrayList<Player> notMoved = new ArrayList<>();
     FileConfiguration config;
-    public static List<String> bots = new ArrayList<>();
-    static final List<String> whisperCommands = Arrays.asList("tell", "w", "msg", "whisper");
     private SpamCheck spamBotCheck;
+
 
     @Override
     public void onEnable() {
-        spamBotCheck = new SpamCheck();
+        spamBotCheck = new SpamCheck(this);
 
         saveDefaultConfig();
-
         config = this.getConfig();
-
         bots = config.getStringList("bots");
 
         SpamCheck.msgDiffFactor = config.getDouble("msg-diff-factor");
@@ -53,6 +53,9 @@ public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
     public void onDisable() {
         try {
             saveConfig();
+
+            HandlerList.unregisterAll((JavaPlugin) this);
+            HandlerList.unregisterAll((Listener) this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,12 +76,18 @@ public class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("noPermissions")));
             return true;
         } else if (sender instanceof ConsoleCommandSender && cmd.getName().equalsIgnoreCase("showspam")) {
-            ConsoleCommandSender console = (ConsoleCommandSender) sender;
-
             log("showspam", ChatColor.DARK_PURPLE + "Here comes the spam:");
 
             for (String oldSpam : new LinkedList<>(spamBotCheck.lastSpamMessages)) {
                 log("showspam", ChatColor.LIGHT_PURPLE + oldSpam);
+            }
+
+            return true;
+        } else if (sender instanceof ConsoleCommandSender && cmd.getName().equalsIgnoreCase("showmessages")) {
+            log("showmessages", ChatColor.DARK_PURPLE + "Here comes the messages:");
+
+            for (String oldMessage : new LinkedList<>(spamBotCheck.lastMessages)) {
+                log("showmessages", ChatColor.LIGHT_PURPLE + oldMessage);
             }
 
             return true;

@@ -1,15 +1,17 @@
 name: ${project.name}
 main: org.zeroBzeroT.antispam.AntiSpam
 version: ${project.version}
-author: [bierdosenhalter]
+author: bierdosenhalter
 description: ${project.description}
-loadbefore: [ChatCo]
+loadbefore: [ ChatCo ]
 commands:
   movereload:
     description: Reloading plugin
     usage: /<command>
   showspam:
     description: shows the last spam messages
+  showmessages:
+    description: shows the last sanitized messages
 permissions:
   move.bypass:
     description: Allows you to bypass the Not-Moved-Filter
