@@ -78,11 +78,11 @@ public class SpamCheck {
         if (saniMsg.length() < minMessageLength)
             return false;
 
-        // remove numbers and hashcodes - 5+ chars
-        saniMsg = saniMsg.replaceAll("\\b(?=([a-zA-Z]*\\d))\\S{4,}\\b", "");
+        // remove hashcodes
+        saniMsg = saniMsg.replaceAll("[^a-zA-Z0-9](?=([a-zA-Z]*\\d))\\S{4,}[^a-zA-Z0-9]", "");
 
-        // remove camelcase
-        saniMsg = saniMsg.replaceAll("\\b(?=([a-z]+[A-Z]+|[A-Z]+[a-z]+){2})\\S{3,}\\b", "");
+        // remove camelcase - why?!?
+        saniMsg = saniMsg.replaceAll("[^a-zA-Z0-9](?=([a-z]+[A-Z]+|[A-Z]+[a-z]+){2})\\S{3,}[^a-zA-Z0-9]", "");
 
         // remove non printable chars and spaces
         saniMsg = saniMsg.replaceAll("[\\p{C} ]", "");
