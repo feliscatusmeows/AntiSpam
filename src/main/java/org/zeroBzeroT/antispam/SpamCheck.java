@@ -78,6 +78,9 @@ public class SpamCheck {
         if (saniMsg.length() < minMessageLength)
             return false;
 
+        // remove long random numbers
+        saniMsg = saniMsg.replaceAll("\\b\\d{9,}\\b", "");
+
         // remove hashcodes
         saniMsg = saniMsg.replaceAll("[^a-zA-Z0-9](?=([a-zA-Z]*\\d))\\S{4,}[^a-zA-Z0-9]", "");
 
